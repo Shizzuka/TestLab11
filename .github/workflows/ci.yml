@@ -6,7 +6,6 @@ on:
   pull_request:
     branches: [ "main", "dev" ]
 
-# Разрешения, необходимые для публикации на GitHub Pages
 permissions:
   contents: read
   pages: write
@@ -18,19 +17,21 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install dependencies
+        run: npm install
         
-      - name: Run tests
-        # Это заглушка для тестов. Команда echo просто выводит текст и завершается успешно.
-        # Если у тебя есть реальные скрипты тестов (например, npm test), замени эти строки на них.
-        run: |
-          echo "Запуск проверок кода..."
-          echo "Все тесты успешно пройдены!"
+      - name: Run Selenium Tests
+        run: npm test
 
   deploy:
-    # Запускать деплой ТОЛЬКО после успешного завершения джобы test
     needs: test 
     
-    # Запускать деплой ТОЛЬКО если изменения происходят в ветке main
     if: github.ref == 'refs/heads/main' 
     
     runs-on: ubuntu-latest
